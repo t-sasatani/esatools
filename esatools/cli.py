@@ -1,6 +1,6 @@
 import click
 
-from esa_tools.Runner import fetch_md_posts
+from esatools.Runner import fetch_md_posts
 
 @click.group()
 def cli():

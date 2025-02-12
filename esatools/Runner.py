@@ -1,4 +1,4 @@
-from esa_tools.EsaClient import EsaClient
+from esatools.EsaClient import EsaClient
 
 def fetch_md_posts():
     """

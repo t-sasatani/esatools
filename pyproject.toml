@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "esa_tools"
+name = "esatools"
 version = "0.1.0"
 description = ""
 authors = ["t-sasatani <sasatani.dev@gmail.com>"]
@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-piyo = "^1.1.2"
+piyo = "^1.1.1"
 python-dotenv = "^1.0.1"
 html2text = "^2024.2.26"
 click = "^8.1.8"
@@ -18,4 +18,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-esatools = "esa_tools.cli:cli"
+esatools = "esatools.cli:cli"
