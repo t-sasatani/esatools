@@ -1,8 +1,8 @@
-# esa-fetch
+# esatools
 
 ## Quickstart
 ```bash
-pip install git+https://github.com/t-sasatani/esa-tools.git
+pip install git+https://github.com/t-sasatani/esatools.git
 ```
 Copy `.example.env` to `.env` and fill in esa.io token, esa username, and export directory.
 ```bash
