@@ -2,17 +2,18 @@ import os
 import logging
 
 from dotenv import load_dotenv
-import html2text
 from pathlib import Path
 
 import re
 from piyo import Client
 from piyo import PiyoHTTPException
 
+from esa_tools.EsaUtilLogger import EsaUtilLogger
+from esa_tools.Formatter import Formatter
+
+logger = EsaUtilLogger(name=__name__).get_logger()
+
 load_dotenv()
-
-logging.basicConfig(level=logging.INFO)
-
 class EsaClient:
     def __init__(self):
         self._access_token = None
@@ -36,7 +37,7 @@ class EsaClient:
     @property
     def temp_export_dir(self)->Path:
         if self._temp_export_dir is None:
-            self._temp_export_dir = Path(os.environ.get('TEMP_EXPORT_DIR'))
+            self._temp_export_dir = Path(os.environ.get('ESATOOLS_EXPORT_DIR'))
             if not self._temp_export_dir.exists():
                 self._temp_export_dir.mkdir(parents=True)
         return self._temp_export_dir
@@ -102,20 +103,3 @@ class EsaClient:
         # Split category by '/', replace spaces with underscores, build the path
         valid_parts = ["_".join(part.split()) for part in category.split('/')]
         return Path(*valid_parts)
-    
-class Formatter:
-    @staticmethod
-    def extract_md(post_data):
-        markdown_content = post_data.get('body_md', None)
-        
-        if markdown_content is None:
-            return "Markdown content not found."
-        
-        return markdown_content
-
-def main():
-    client = EsaClient()
-    client.export_md_posts()
-
-if __name__ == '__main__':
-    main()

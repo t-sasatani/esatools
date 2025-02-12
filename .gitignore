@@ -1,3 +1,11 @@
 # tokens
 .env
-temp/
+
+# temporary files
+*/__pycache__/
+
+# user output
+docs/
+
+# logs
+app.log
