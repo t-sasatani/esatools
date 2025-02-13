@@ -8,4 +8,4 @@
 docs/
 
 # logs
-app.log
+log/

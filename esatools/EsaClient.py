@@ -1,5 +1,4 @@
 import os
-import logging
 
 from dotenv import load_dotenv
 from pathlib import Path
@@ -11,7 +10,7 @@ from piyo import PiyoHTTPException
 from esatools.EsaUtilLogger import EsaUtilLogger
 from esatools.Formatter import Formatter
 
-logger = EsaUtilLogger(name=__name__).get_logger()
+logger = EsaUtilLogger().get_logger(__name__)
 
 load_dotenv()
 class EsaClient:
@@ -53,17 +52,22 @@ class EsaClient:
     @property
     def total_posts(self):
         if self._total_posts is None:
-            response = self.client.posts(keywords=None, search_options={})
-            self._total_posts = response.get('total_count', 0)
+            try:
+                response = self.client.posts(keywords=None, search_options={})
+                self._total_posts = response.get('total_count', 0)
+            except PiyoHTTPException as e:
+                logger.error(f"HTTP error getting total posts: {e}")
+                self._total_posts = 0
         return self._total_posts
     
-    def export_md_posts(self):
-        logging.info(f"Exporting {self.total_posts} posts...")
-        for post_id in range(1, self.total_posts+1):
+    def export_md_posts(self, start_post_id, end_post_id):
+        logger.info(f"Exporting posts from {self.current_team} to {self.temp_export_dir}")
+        logger.info(f"Exporting posts {start_post_id} to {end_post_id}")
+        for post_id in range(start_post_id, end_post_id + 1):
             try:
                 post = self.client.post(post_id)
                 if not post:
-                    logging.warning(f"Post ID {post_id} not found.")
+                    logger.warning(f"Post ID {post_id} not found.")
                     continue
 
                 post_md = Formatter.extract_md(post)
@@ -72,24 +76,29 @@ class EsaClient:
 
                 # Create nested directories based on category
                 category = post.get('category', '')
-                category_path = self.temp_export_dir / self._sanitize_category_path(category)
+
+                if not category:
+                    category_path = self.temp_export_dir
+                else:
+                    category_path = self.temp_export_dir / self._sanitize_category_path(category)
 
                 if not category_path.exists():
                     category_path.mkdir(parents=True)
-                    logging.info(f"Created category directory: {category_path}")
+                    logger.info(f"Created category directory: {category_path}")
 
-                post_file_name = f"{post_id}_{sanitized_title}.md"
+                post_file_name = f"{sanitized_title}.md"
                 post_file_path = category_path / post_file_name
 
                 with open(post_file_path, 'w', encoding='utf-8') as f:
                     f.write(post_md)
-                logging.info(f"Exported post {post_id} to {post_file_path}")
+                logger.debug(f"Exported post {post_id} to {post_file_path}")
 
             except PiyoHTTPException as e:
-                logging.error(f"HTTP error exporting post ID {post_id}: {e}")
+                logger.warning(f"Post ID {post_id} not found. This may be due to a deleted post or a permissions issue.")
+                logger.debug(f"HTTP error getting post ID {post_id}: {e}")
 
             except Exception as e:
-                logging.error(f"Unexpected error exporting post ID {post_id}: {e}")
+                logger.error(f"Unexpected error exporting post ID {post_id}: {e}")
 
     def _sanitize_filename(self, name):
         # Replace spaces with underscores, remove invalid characters including colons
@@ -101,5 +110,8 @@ class EsaClient:
 
     def _sanitize_category_path(self, category):
         # Split category by '/', replace spaces with underscores, build the path
+        # if category doesn't include '/', return the sanitized category
+        if '/' not in category:
+            return "_".join(category.split())
         valid_parts = ["_".join(part.split()) for part in category.split('/')]
         return Path(*valid_parts)
