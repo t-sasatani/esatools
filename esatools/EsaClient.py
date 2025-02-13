@@ -5,6 +5,7 @@ Module to interact with the ESA API using the piyo library.
 import os
 import re
 from pathlib import Path
+from typing import Optional
 
 from dotenv import load_dotenv
 from piyo import Client, PiyoHTTPException
@@ -26,11 +27,11 @@ class EsaClient:
         """
         Construct the EsaClient class.
         """
-        self._access_token = None
-        self._current_team = None
-        self._total_posts = None
-        self._temp_export_dir = None
-        self._client = None
+        self._access_token: Optional[str] = None
+        self._current_team: Optional[str] = None
+        self._total_posts: Optional[int] = None
+        self._temp_export_dir: Optional[Path] = None
+        self._client: Optional[Client] = None
 
     @property
     def access_token(self) -> str:
