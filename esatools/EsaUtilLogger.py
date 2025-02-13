@@ -1,20 +1,25 @@
+"""
+Logger class for the esatools package.
+"""
+
 import logging
 import os
-from dotenv import load_dotenv
 from datetime import datetime
 
 import coloredlogs
+from dotenv import load_dotenv
+
 load_dotenv()
 
 log_level = os.environ.get("ESATOOLS_LOG_LEVEL", "INFO")
+
+
 class EsaUtilLogger:
     """
     Custom logger class to add line numbers to log messages with a level of WARNING or higher.
     """
 
-    def __init__(
-        self, level=log_level, fmt=None, log_file=None, log_dir="log"
-    ):
+    def __init__(self, level=log_level, fmt=None, log_file=None, log_dir="log"):
         """
         Construct the LoRaDAQLogger class.
 

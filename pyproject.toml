@@ -12,6 +12,9 @@ python-dotenv = "^1.0.1"
 html2text = "^2024.2.26"
 click = "^8.1.8"
 coloredlogs = "^15.0.1"
+isort = "^6.0.0"
+ruff = "^0.9.6"
+black = "^25.1.0"
 
 
 [build-system]
@@ -20,3 +23,32 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 esatools = "esatools.cli:cli"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "W",
+    "C",
+    "D",]
+ignore = [
+    "E501",  # Ignore line length errors, handled by Black
+    "D200",  # Ignore One-line docstring should be in one line
+    "D205",  # Ignore blank line required between summary line and description
+    "D212",  # Ignore multi-line docstring summary should start at the first line
+    "D213",  # Ignore multi-line docstring summary should start at the second line
+    "C901",  # Ignore function is too complex, to be removed in the future
+    "D203",  # Ignore 1 blank line required before class docstring
+]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
