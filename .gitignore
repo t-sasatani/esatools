@@ -5,7 +5,11 @@
 */__pycache__/
 
 # user output
-docs/
+backup/
 
 # logs
 log/
+
+# build files
+*.whl
+dist/

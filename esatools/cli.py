@@ -16,9 +16,9 @@ def cli():
 
 
 @cli.command()
-def fetch():
+def backup():
     """
-    Fetch all posts from the client and return them as a list of markdown strings.
+    Fetch all posts using the ESA API and save them as categorized markdown files.
     """
     fetch_md_posts()
 

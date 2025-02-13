@@ -92,9 +92,8 @@ class EsaClient:
         Export posts from the current team to markdown files.
         """
         logger.info(
-            f"Exporting posts from {self.current_team} to {self.temp_export_dir}"
+            f"Exporting posts {start_post_id} to {end_post_id} to {self.temp_export_dir.absolute()}"
         )
-        logger.info(f"Exporting posts {start_post_id} to {end_post_id}")
         for post_id in range(start_post_id, end_post_id + 1):
             try:
                 post = self.client.post(post_id)
@@ -118,7 +117,7 @@ class EsaClient:
 
                 if not category_path.exists():
                     category_path.mkdir(parents=True)
-                    logger.info(f"Created category directory: {category_path}")
+                    logger.debug(f"Created category directory: {category_path}")
 
                 post_file_name = f"{sanitized_title}.md"
                 post_file_path = category_path / post_file_name
